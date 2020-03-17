@@ -16,7 +16,7 @@ def print_obj(obj, indent=0):
 def read_image(image_id):
     import numpy
     from omero.gateway import BlitzGateway
-    from Parse_OMERO_Properties import USERNAME, PASSWORD, HOST, PORT
+    from OMERO_Properties import USERNAME, PASSWORD, HOST, PORT
     conn = BlitzGateway(USERNAME, PASSWORD, port=PORT, host=HOST)
     conn.connect()
     conn.SERVICE_OPTS.setOmeroGroup('-1')
