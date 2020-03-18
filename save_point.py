@@ -3,8 +3,8 @@ def save_point(point, image, upd):
     import omero
     from omero.rtypes import rdouble, rint
     thispoint = omero.model.PointI()
-    thispoint.x = rdouble(point[1])
-    thispoint.y = rdouble(point[2])
+    thispoint.x = rdouble(point[2])
+    thispoint.y = rdouble(point[1])
     thispoint.theZ = rint(point[0])
     if len(point) > 3:
         thispoint.theT = rint(point[3])
