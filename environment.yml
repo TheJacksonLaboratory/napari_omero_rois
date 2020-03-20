@@ -170,5 +170,4 @@ dependencies:
     - pyqtwebengine==5.12.1
     - pyside2==5.14.1
     - shiboken2==5.14.1
-prefix: /home/erick/miniconda3/envs/napari
 
