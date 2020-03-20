@@ -1,4 +1,4 @@
-def omero_napari(id):
+def omero_napari(image_id):
     from retrieval import get_image
     from napari_viewer import view_image
     image = get_image(image_id)
@@ -11,6 +11,6 @@ def omero_napari(id):
 # Register omero_napari as an OMERO CLI plugin
 if __name__ == "__main__":
 
-    image_id=951
+    image_id=957
     omero_napari(image_id)
     
