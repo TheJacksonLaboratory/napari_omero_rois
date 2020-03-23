@@ -7,9 +7,11 @@ def get_image(image_id):
     conn.connect()
     conn.SERVICE_OPTS.setOmeroGroup('-1')
     
-    #IMAGE_ID = 182
-    image = conn.getObject("Image", image_id)
-    return image
+    if (image_id):
+        image = conn.getObject("Image", image_id)
+        return image
+    else:
+        return None
 
 def get_data(img, c=0):
     """
@@ -18,23 +20,26 @@ def get_data(img, c=0):
     :param  img:        omero.gateway.ImageWrapper
     :c      int:        Channel index
     """
-    sz = img.getSizeZ()
-    st = img.getSizeT()
-    # get all planes we need
-    zct_list = [(z, c, t) for t in range(st) for z in range(sz)]
-    pixels = img.getPrimaryPixels()
-    planes = []
-    for p in pixels.getPlanes(zct_list):
-        # self.ctx.out(".", newline=False)
-        planes.append(p)
-    # self.ctx.out("")
-    if sz == 1 or st == 1:
-        return numpy.array(planes)
-    # arrange plane list into 2D numpy array of planes
-    z_stacks = []
-    for t in range(st):
-        z_stacks.append(numpy.array(planes[t * sz : (t + 1) * sz]))
-    return numpy.array(z_stacks)
+    if (img):
+        sz = img.getSizeZ()
+        st = img.getSizeT()
+        # get all planes we need
+        zct_list = [(z, c, t) for t in range(st) for z in range(sz)]
+        pixels = img.getPrimaryPixels()
+        planes = []
+        for p in pixels.getPlanes(zct_list):
+            # self.ctx.out(".", newline=False)
+            planes.append(p)
+        # self.ctx.out("")
+        if sz == 1 or st == 1:
+            return numpy.array(planes)
+        # arrange plane list into 2D numpy array of planes
+        z_stacks = []
+        for t in range(st):
+            z_stacks.append(numpy.array(planes[t * sz : (t + 1) * sz]))
+        return numpy.array(z_stacks)
+    else:
+        return None
 
 
 plane_cache = {}

@@ -11,29 +11,31 @@ def save_rois(viewer, image):
     >>> from omero_napari import *
     >>> save_rois(viewer, omero_image)
     """
-    conn = image._conn
+    if viewer and image:
+        conn = image._conn
 
-    for layer in viewer.layers:
-        print(type(layer))
-        if type(layer) == points_layer:
-            for p in layer.data:
-                point = create_omero_point(p, image)
-                roi = create_roi(conn, image, [point])
-                print("Created ROI: %s" % roi.id.val)
-        elif type(layer) == shapes_layer:
-            if len(layer.data) == 0 or len(layer.shape_type) == 0:
-                continue
-            shape_types = layer.shape_type
-            if isinstance(shape_types, str):
-                shape_types = [layer.shape_type for t in range(len(layer.data))]
-            for shape_type, data in zip(shape_types, layer.data):
-                print(shape_type, data)
-                shape = create_omero_shape(shape_type, data, image)
-                if shape is not None:
-                    roi = create_roi(conn, image, [shape])
-        elif type(layer) == labels_layer:
-            print('Saving Labels not supported')
-
+        for layer in viewer.layers:
+            print(type(layer))
+            if type(layer) == points_layer:
+                for p in layer.data:
+                    point = create_omero_point(p, image)
+                    roi = create_roi(conn, image, [point])
+                    print("Created ROI: %s" % roi.id.val)
+            elif type(layer) == shapes_layer:
+                if len(layer.data) == 0 or len(layer.shape_type) == 0:
+                    continue
+                shape_types = layer.shape_type
+                if isinstance(shape_types, str):
+                    shape_types = [layer.shape_type for t in range(len(layer.data))]
+                for shape_type, data in zip(shape_types, layer.data):
+                    print(shape_type, data)
+                    shape = create_omero_shape(shape_type, data, image)
+                    if shape is not None:
+                        roi = create_roi(conn, image, [shape])
+            elif type(layer) == labels_layer:
+                print('Saving Labels not supported')
+    else:
+        return None
     
 
 def get_x(coordinate):

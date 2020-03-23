@@ -8,15 +8,17 @@ def view_image(image):
 
     # if isinstance(args.object, ImageI):
     # image_id = args.object.id
+    if (image):
+        with napari.gui_qt():
+            viewer = napari.Viewer()
 
-    with napari.gui_qt():
-        viewer = napari.Viewer()
+            add_buttons(viewer, image)
 
-        add_buttons(viewer, image)
-
-        load_omero_image(viewer, image)
-        # add 'conn' and 'omero_image' to the viewer console
-    return viewer
+            load_omero_image(viewer, image)
+            # add 'conn' and 'omero_image' to the viewer console
+        return viewer
+    else:
+        return None
 
 def add_buttons(viewer, img):
     from save_rois import save_rois
@@ -40,12 +42,15 @@ def load_omero_image(viewer, image):
     :param  image:      omero.gateway.ImageWrapper
     :param  eager:      If true, load all planes immediately
     """
-    for c, channel in enumerate(image.getChannels()):
-        print("loading channel %s:" % c)
-        load_omero_channel(viewer, image, channel, c)
+    if image and viewer:
+        for c, channel in enumerate(image.getChannels()):
+            print("loading channel %s:" % c)
+            load_omero_channel(viewer, image, channel, c)
 
-    set_dims_defaults(viewer, image)
-    set_dims_labels(viewer, image)
+        set_dims_defaults(viewer, image)
+        set_dims_labels(viewer, image)
+    else:
+        return None
 
 
 def load_omero_channel(viewer, image, channel, c_index):
