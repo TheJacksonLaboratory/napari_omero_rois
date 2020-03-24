@@ -20,17 +20,14 @@ strategy:
       python.version: '3.7'
 
 steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-  displayName: 'Use Python $(python.version)'
+  - bash: echo "##vso[task.prependpath]$CONDA/bin"
+  displayName: Add conda to PATH
 
-- script: |
-    conda env create -f environment.yml
-  displayName: 'Install dependencies'
+- script: conda env create --file environment.yml
+  displayName: Create Anaconda environment
 
-- script: |
+- bash: |
     source activate napari
     pip install pytest pytest-azurepipelines
     pytest
-  displayName: 'pytest'
+  displayName: pytest
