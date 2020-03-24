@@ -30,6 +30,7 @@ steps:
   displayName: 'Install dependencies'
 
 - script: |
+    conda init bash
     conda activate napari
     pip install pytest pytest-azurepipelines
     pytest
