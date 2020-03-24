@@ -27,7 +27,7 @@ steps:
   displayName: Create Anaconda environment
 
 - bash: |
-    source activate napari
+    source /base/conda/miniconda3/bin/activate /my/home/.conda/envs/napari
     pip install pytest pytest-azurepipelines
     pytest
   displayName: pytest
