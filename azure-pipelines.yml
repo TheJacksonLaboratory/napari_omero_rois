@@ -1,33 +1,44 @@
-# Python package
-# Create and test a Python package on multiple Python versions.
-# Add steps that analyze code, save the dist with the build record, publish to a PyPI-compatible index, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/python
-
 trigger:
-- master
+  - master
+
+  
+
+# this section would run it in azure devops 
+# pool:
+#   vmImage: 'ubuntu-latest'
+# strategy:
+#   matrix:
+#     Python27:
+#       python.version: '2.7'
+#     Python37:
+#       python.version: '3.7'
+# steps:
+    
+#   - script: |
+#       conda env create --file environment.yml
+#       /usr/share/miniconda/envs/napari/bin/python -m pip install pytest pytest-azurepipelines
+#       /usr/share/miniconda/envs/napari/bin/python -m pytest
+#     displayName: 'Setup conda/install dependencies, run tests'
+
 
 pool:
-  vmImage: 'ubuntu-latest'
-strategy:
-  matrix:
-    Python27:
-      python.version: '2.7'
-    Python35:
-      python.version: '3.5'
-    Python36:
-      python.version: '3.6'
-    Python37:
-      python.version: '3.7'
-
+  name: ctomerodev
 steps:
-  - bash: echo "##vso[task.prependpath]$CONDA/bin"
-  displayName: Add conda to PATH
+  - script: |
+      touch OMERO_Properties.py
+      echo "USERNAME='$(TEST_OMERO_USER)'" >> OMERO_Properties.py
+      echo "PASSWORD = '$(TEST_OMERO_PASS)'" >> OMERO_Properties.py
+      echo "HOST = '$(TEST_OMERO_HOST)'" >> OMERO_Properties.py
+      echo "PORT = $(TEST_PORT)" >> OMERO_Properties.py
+      
+    displayName: 'Create file with variables/secrets'
+    env:
+      TEST_OMERO_PASS: $(TEST_OMERO_PASS) 
 
-- script: conda env create --file environment.yml
-  displayName: Create Anaconda environment
+  - script: |
+      docker build -t napari_omero:v1 .
+    displayName: 'Build docker container'
 
-- bash: |
-    source /base/conda/miniconda3/bin/activate /my/home/.conda/envs/napari
-    pip install pytest pytest-azurepipelines
-    pytest
-  displayName: pytest
+  - script: |
+      docker run --rm napari_omero:v1
+    displayName: 'Run tests on container'
